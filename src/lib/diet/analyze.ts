@@ -26,15 +26,19 @@ export function analyze(reading: LabelReading, diets: readonly Diet[] = DIETS): 
   return { reading, matches, results };
 }
 
+// What text decodes to when its encoding is broken (U+FFFD).
+const REPLACEMENT_CHAR = String.fromCharCode(0xfffd);
+const JUNK = new RegExp(`[?？${REPLACEMENT_CHAR}]`, "g");
+
 /**
  * Garbled or corrupted text (mojibake, "????", replacement chars) must never be
  * judged "safe": treat it as unreadable so the verdict is "unsure".
  */
 export function looksReadable(text: string): boolean {
   const t = text.trim();
-  if (!t || t.includes("�")) return false;
+  if (!t || t.includes(REPLACEMENT_CHAR)) return false;
   const letters = t.match(/\p{L}/gu)?.length ?? 0;
-  const junk = t.match(/[?？�]/g)?.length ?? 0;
+  const junk = t.match(JUNK)?.length ?? 0;
   return letters >= 2 && junk / t.length < 0.3;
 }
 
