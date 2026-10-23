@@ -66,7 +66,7 @@ export default async function Place({ params }: PageProps<"/place/[id]">) {
             <figure className="on-pastel relative mt-6 rotate-[-0.8deg] bg-fuji p-5 ink ink-shadow">
               <span className="eyebrow">The India connection</span>
               <p className="display mt-2 text-xl leading-snug font-medium">{d.indiaLink}</p>
-              <span aria-hidden className="absolute -top-3 -right-2 rounded-full bg-shu px-3 py-1 text-xs font-bold text-white ink">
+              <span aria-hidden className="absolute -top-3 -right-2 rounded-full bg-[#b8452c] px-3 py-1 text-xs font-bold text-white ink">
                 縁
               </span>
             </figure>

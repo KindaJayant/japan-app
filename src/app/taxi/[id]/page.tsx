@@ -25,7 +25,7 @@ export default async function TaxiCard({ params }: PageProps<"/taxi/[id]">) {
 
       <div className="flex flex-1 flex-col justify-center py-6 landscape:flex-row landscape:items-center landscape:gap-10">
         <div className="landscape:flex-1">
-          <p className="font-mincho text-xl font-extrabold text-[#d4573b]">運転手さんへ</p>
+          <p className="font-mincho text-xl font-extrabold text-[#b8452c]">運転手さんへ</p>
           <h1 lang="ja" className="mt-2 font-mincho text-[3.4rem] leading-[1.15] font-extrabold break-keep sm:text-7xl">
             {d.nameJa}
           </h1>

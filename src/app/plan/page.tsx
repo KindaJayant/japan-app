@@ -41,7 +41,10 @@ export default function Page() {
 function TripStudio() {
   const [turns, setTurns] = useState<Turn[]>([]);
   // ?q= arrives from Today ("re-plan for rain") and place pages.
-  const [input, setInput] = useState(useSearchParams().get("q") ?? "");
+  // A request handed over from Today ("re-plan for rain") or a place page.
+  const handoff = useSearchParams().get("q");
+  const [input, setInput] = useState("");
+  const [currentTrip] = useStored<VerifiedItinerary | null>(TRIP_KEY, null);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useStored<Turn[] | null>(SAVED_KEY, null);
   const boardRef = useRef<HTMLDivElement>(null);
@@ -158,6 +161,22 @@ function TripStudio() {
         <span className="font-mincho text-sm font-extrabold text-sumi-soft">旅の設計</span>
       </header>
 
+      {!started && handoff && (
+        <section className="on-pastel mt-5 rounded-xl bg-yamabuki p-4 ink ink-shadow">
+          <p className="eyebrow">Saathi will</p>
+          <p className="mt-1 font-bold leading-snug">{handoff}</p>
+          {currentTrip && <p className="mt-1 text-sm opacity-80">Using your current trip: {currentTrip.itinerary.title}</p>}
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => send(withTrip(handoff, currentTrip))}
+            className="press mt-3 rounded-full bg-[#2b2522] px-5 py-2.5 font-bold text-[#f6efe3] ink"
+          >
+            {busy ? "Re-planning…" : "Re-plan now"}
+          </button>
+        </section>
+      )}
+
       {!started && (
         <section className="mt-5 space-y-4">
           <p className="max-w-[38ch] text-[1.05rem] leading-relaxed text-sumi-soft">
@@ -222,7 +241,7 @@ function TripStudio() {
               placeholder="Change anything: “we're in Osaka now”"
               className="min-w-0 flex-1 bg-transparent px-4 outline-none placeholder:text-sumi-soft"
             />
-            <button type="submit" disabled={busy || !input.trim()} className="press rounded-full bg-shu px-5 py-2.5 font-bold text-white disabled:opacity-50">
+            <button type="submit" disabled={busy || !input.trim()} className="press rounded-full bg-[#b8452c] px-5 py-2.5 font-bold text-white disabled:opacity-50">
               {busy ? "…" : "Send"}
             </button>
           </form>
@@ -230,6 +249,16 @@ function TripStudio() {
       )}
     </div>
   );
+}
+
+/** Hand the agent the current trip (compactly) so a re-plan edits it instead of starting over. */
+function withTrip(request: string, trip: VerifiedItinerary | null) {
+  if (!trip) return request;
+  const it = trip.itinerary;
+  const days = it.days.map((d) => `Day ${d.day} ${d.city}: ${d.stops.join(", ") || "travel/rest"}`).join("; ");
+  return `${request}
+
+Current trip "${it.title}": ${it.travellers.adults} adults, ${it.travellers.seniors} seniors, ${it.travellers.kids} kids; diets ${it.diets.join("+") || "none"}; ${it.style}, ${it.pace}; budget ${it.budgetPerPersonInr ?? "flexible"} INR pp. ${days}.`;
 }
 
 /** The brief as compact tags instead of a wall of text. */

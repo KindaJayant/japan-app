@@ -1,13 +1,16 @@
 /**
  * Records a phone-sized walkthrough of the app (backup demo video).
  *   npm run build && npx next start -p 3200      # in another terminal
- *   node scripts/record-demo.mjs [baseUrl]         # → demo/japan-saathi-demo.webm
+ *   node scripts/record-demo.mjs [baseUrl]         # → demo/japan-saathi-demo.mp4
+ * Captures Chrome's own high-DPI screencast (a true 2× phone frame), then
+ * encodes with ffmpeg (set FFMPEG=path if it isn't on PATH).
  * Uses your installed Chrome. Taps show as ripples so viewers can follow along.
  * The trip brief is pre-warmed so the planner replays from cache (no quota, no waiting).
  */
 import { chromium } from "playwright";
-import { mkdirSync, readdirSync, renameSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const BASE = process.argv[2] ?? "http://localhost:3200";
 const OUT = "demo";
@@ -38,7 +41,6 @@ const ctx = await browser.newContext({
   viewport: { width: W, height: H },
   deviceScaleFactor: 2,
   colorScheme: "light",
-  recordVideo: { dir: OUT, size: { width: W * 2, height: H * 2 } },
   geolocation: { latitude: 35.7142, longitude: 139.7959 }, // simulated: near Senso-ji
   permissions: ["geolocation"],
   locale: "en-IN",
@@ -61,6 +63,21 @@ await ctx.addInitScript(() => {
 });
 
 const page = await ctx.newPage();
+
+// Chrome screencast at device pixels: frames arrive only when the screen changes,
+// each with a timestamp, so we can rebuild exact timing in ffmpeg.
+const FRAMES = join(OUT, "frames");
+rmSync(FRAMES, { recursive: true, force: true });
+mkdirSync(FRAMES, { recursive: true });
+const frames = [];
+const cdp = await ctx.newCDPSession(page);
+cdp.on("Page.screencastFrame", async ({ data, metadata, sessionId }) => {
+  const file = join(FRAMES, `f${String(frames.length).padStart(5, "0")}.jpg`);
+  writeFileSync(file, Buffer.from(data, "base64"));
+  frames.push({ file, t: metadata.timestamp });
+  await cdp.send("Page.screencastFrameAck", { sessionId }).catch(() => {});
+});
+await cdp.send("Page.startScreencast", { format: "jpeg", quality: 92, maxWidth: W * 2, maxHeight: H * 2 });
 const pause = (ms) => page.waitForTimeout(ms);
 async function glide(px, steps = 12) {
   for (let i = 0; i < steps; i++) {
@@ -170,8 +187,28 @@ await pause(2200);
 await tap(page.locator("nav[aria-label=Main]").getByRole("link", { name: /Explore/ }));
 await pause(2000);
 
+await pause(800);
+await cdp.send("Page.stopScreencast");
 await ctx.close();
 await browser.close();
-const vid = readdirSync(OUT).filter((f) => f.endsWith(".webm")).map((f) => join(OUT, f)).pop();
-renameSync(vid, join(OUT, "japan-saathi-demo.webm"));
-console.log("saved", join(OUT, "japan-saathi-demo.webm"));
+
+// Variable-frame-rate concat list → constant 30 fps phone video.
+const posix = (p) => resolve(p).split("\\").join("/");
+const lines = [];
+frames.forEach((f, i) => {
+  const next = frames[i + 1]?.t ?? f.t + 1.2;
+  lines.push(`file '${posix(f.file)}'`, `duration ${Math.max(0.001, next - f.t).toFixed(3)}`);
+});
+lines.push(`file '${posix(frames.at(-1).file)}'`);
+const list = join(OUT, "frames.txt");
+writeFileSync(list, lines.join("\n"));
+const stamp = new Date().toISOString().slice(0, 16).replace("T", "_").replace(":", "");
+const mp4 = join(OUT, `japan-saathi-demo_${stamp}.mp4`); // timestamped: an open player can't lock it
+execFileSync(process.env.FFMPEG ?? "ffmpeg", [
+  "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", list,
+  "-vf", `fps=30,scale=${W * 2}:${H * 2}:flags=lanczos:in_range=pc:out_range=tv,format=yuv420p`,
+  "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-movflags", "+faststart", mp4,
+]);
+rmSync(FRAMES, { recursive: true, force: true });
+rmSync(list, { force: true });
+console.log(`saved ${mp4} (${frames.length} frames)`);

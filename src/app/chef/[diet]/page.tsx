@@ -22,7 +22,7 @@ export default async function ChefCard({ params }: PageProps<"/chef/[diet]">) {
       </div>
 
       <article className="mx-auto mt-6 max-w-2xl border-[3px] border-[#2b2522] bg-white p-6 shadow-[6px_6px_0_#2b2522] sm:p-10">
-        <p className="font-mincho text-lg font-extrabold text-[#d4573b]">お店の方へ</p>
+        <p className="font-mincho text-lg font-extrabold text-[#b8452c]">お店の方へ</p>
         <p className="mt-1 text-sm">To the restaurant staff</p>
         <p lang="ja" className="mt-6 font-mincho text-[1.6rem] leading-[1.9] font-extrabold sm:text-4xl sm:leading-[1.8]">
           {card.ja}

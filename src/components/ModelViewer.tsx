@@ -45,7 +45,7 @@ export function ModelViewer({ src, alt }: { src: string; alt: string }) {
         >
           <button
             slot="ar-button"
-            className="press absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border-[1.5px] border-[#2b2522] bg-[#2b2522] px-5 py-3 font-bold text-[#f6efe3] shadow-[3px_3px_0_#d4573b]"
+            className="press absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border-[1.5px] border-[#2b2522] bg-[#2b2522] px-5 py-3 font-bold text-[#f6efe3] shadow-[3px_3px_0_#b8452c]"
           >
             View on your table
           </button>

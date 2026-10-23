@@ -195,7 +195,7 @@ export function TripIntake({ onSubmit, busy }: { onSubmit: (brief: string) => vo
         <p className="text-xs leading-snug text-sumi-soft">
           Saathi drafts the trip, then our checker verifies every meal, rupee, stair and train before you see it.
         </p>
-        <button type="submit" disabled={busy} className="press shrink-0 rounded-full bg-shu px-5 py-3 font-bold text-white ink ink-shadow disabled:opacity-60">
+        <button type="submit" disabled={busy} className="press shrink-0 rounded-full bg-[#b8452c] px-5 py-3 font-bold text-white ink ink-shadow disabled:opacity-60">
           {busy ? "Designing…" : "Design my trip"}
         </button>
       </div>

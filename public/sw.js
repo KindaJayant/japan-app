@@ -5,7 +5,7 @@
  *    the map and the 3D models.
  *  - Pages & assets: stale-while-revalidate. API calls: network only (except photos).
  */
-const VERSION = "saathi-v2";
+const VERSION = "saathi-v3";
 const PLACES = ["fushimi-inari", "kinkakuji", "kiyomizu", "arashiyama", "sensoji", "nakamuraya", "shibuya", "todaiji", "dotonbori", "hiroshima", "kawaguchiko"];
 const PRECACHE = [
   "/",
@@ -22,7 +22,14 @@ const PRECACHE = [
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(VERSION).then((c) => Promise.allSettled(PRECACHE.map((u) => c.add(u)))).then(() => self.skipWaiting()),
+    caches
+      .open(VERSION)
+      .then(async (c) => {
+        // Every pre-generated Japanese audio clip, so "Play" works underground.
+        const audio = await fetch("/audio/index.json").then((r) => (r.ok ? r.json() : [])).catch(() => []);
+        return Promise.allSettled([...PRECACHE, ...audio].map((u) => c.add(u)));
+      })
+      .then(() => self.skipWaiting()),
   );
 });
 

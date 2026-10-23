@@ -160,7 +160,7 @@ export function TripBoard({ v }: { v: VerifiedItinerary }) {
                 <span className={c.isJapan ? "font-extrabold" : ""}>{c.name}</span>
                 <span className="relative h-7 overflow-hidden rounded-md bg-washi-deep">
                   <span
-                    className={`absolute inset-y-0 left-0 rounded-md ${c.isJapan ? "bg-shu" : "bg-sumi-soft/50"}`}
+                    className={`absolute inset-y-0 left-0 rounded-md ${c.isJapan ? "bg-[#b8452c]" : "bg-sumi-soft/50"}`}
                     style={{ width: `${(c.total / max) * 100}%` }}
                   />
                   <span className={`absolute inset-y-0 left-2 flex items-center text-xs font-bold ${c.isJapan ? "text-white" : ""}`}>{inr(c.total)}</span>

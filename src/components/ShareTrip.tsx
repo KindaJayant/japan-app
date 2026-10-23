@@ -39,7 +39,7 @@ async function paintPoster(v: VerifiedItinerary): Promise<Blob> {
   const display = fontFamily("--font-fraunces", "Georgia, serif");
   const body = fontFamily("--font-zen-maru", "system-ui, sans-serif");
   const mincho = fontFamily("--font-shippori", "serif");
-  const INK = "#2b2522", SHU = "#d4573b", WASHI = "#f6efe3";
+  const INK = "#2b2522", SHU = "#b8452c", WASHI = "#f6efe3";
   const it = v.itinerary;
 
   // paper + frame
@@ -223,7 +223,7 @@ export function ShareTrip({ v }: { v: VerifiedItinerary }) {
           </button>
         )}
         {saved ? (
-          <Link transitionTypes={["nav-forward"]} href="/today" className="press rounded-full bg-shu px-5 py-2.5 font-bold text-white ink">
+          <Link transitionTypes={["nav-forward"]} href="/today" className="press rounded-full bg-[#b8452c] px-5 py-2.5 font-bold text-white ink">
             Open in Today →
           </Link>
         ) : (

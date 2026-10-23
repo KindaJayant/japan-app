@@ -135,7 +135,7 @@ export function JourneyMap({ stops, routeKey, onPick, you }: JourneyMapProps) {
             return (
               <g key={i}>
                 <path d={d} fill="none" stroke="#2b2522" strokeOpacity=".25" strokeWidth={6 * u} strokeLinecap="round" transform={`translate(${2 * u} ${2 * u})`} className="draw-leg" style={{ animationDelay: `${i * 0.45}s` }} pathLength={1} />
-                <path d={d} fill="none" stroke="#d4573b" strokeWidth={5 * u} strokeLinecap="round" className="draw-leg" style={{ animationDelay: `${i * 0.45}s` }} pathLength={1} />
+                <path d={d} fill="none" stroke="#b8452c" strokeWidth={5 * u} strokeLinecap="round" className="draw-leg" style={{ animationDelay: `${i * 0.45}s` }} pathLength={1} />
                 <path d={d} fill="none" stroke="#fbf3e6" strokeWidth={1.6 * u} strokeDasharray={`${6 * u} ${6 * u}`} className="fade-in" style={{ animationDelay: `${i * 0.45 + 0.4}s` }} />
                 {screenLen > 70 && (
                   <g className="fade-in" style={{ animationDelay: `${i * 0.45 + 0.35}s` }} transform={`translate(${mid[0]} ${mid[1]})`}>
@@ -166,7 +166,7 @@ export function JourneyMap({ stops, routeKey, onPick, you }: JourneyMapProps) {
               aria-label={`${i + 1}. ${d.name}`}
               onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && pick(d)}
             >
-              <circle cx={x} cy={y} r={(active ? 17 : 13) * u} fill={active ? "#d4573b" : "#fbf3e6"} stroke="#2b2522" strokeWidth={2.2 * u} />
+              <circle cx={x} cy={y} r={(active ? 17 : 13) * u} fill={active ? "#b8452c" : "#fbf3e6"} stroke="#2b2522" strokeWidth={2.2 * u} />
               <text x={x} y={y + 4.6 * u} textAnchor="middle" fontSize={13 * u} fontWeight={800} fill={active ? "#fff" : "#2b2522"}>
                 {i + 1}
               </text>
@@ -188,7 +188,7 @@ export function JourneyMap({ stops, routeKey, onPick, you }: JourneyMapProps) {
         <g transform={`translate(${vb[0] + vb[2] - 34 * u} ${vb[1] + 38 * u})`} opacity=".75">
           <circle r={18 * u} fill="#fbf3e6" stroke="#2b2522" strokeWidth={1.4 * u} />
           <path d={`M0 ${-14 * u} L${5 * u} 0 L0 ${14 * u} L${-5 * u} 0Z`} fill="#2b2522" />
-          <path d={`M0 ${-14 * u} L${5 * u} 0 L${-5 * u} 0Z`} fill="#d4573b" />
+          <path d={`M0 ${-14 * u} L${5 * u} 0 L${-5 * u} 0Z`} fill="#b8452c" />
           <text y={-22 * u} textAnchor="middle" fontSize={11 * u} fontWeight={800} fill="#2b2522">N</text>
         </g>
       </svg>

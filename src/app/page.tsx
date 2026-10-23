@@ -173,7 +173,7 @@ export default function Home() {
                 Visit Tōdai-ji →
               </Link>
             </figcaption>
-            <span aria-hidden className="absolute -right-2 -top-3 rounded-full bg-shu px-3 py-1 text-xs font-bold text-white ink">
+            <span aria-hidden className="absolute -right-2 -top-3 rounded-full bg-[#b8452c] px-3 py-1 text-xs font-bold text-white ink">
               縁 bond
             </span>
           </figure>

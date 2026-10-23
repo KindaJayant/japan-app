@@ -12,7 +12,10 @@
     "models": "tsx scripts/make-models.ts",
     "icons": "node scripts/make-icons.mjs",
     "check": "tsc --noEmit && npm run eval:rules && npm run eval:plan",
-    "eval:plan": "tsx scripts/eval-plan.ts"
+    "eval:plan": "tsx scripts/eval-plan.ts",
+    "audio": "tsx --env-file-if-exists=.env.local scripts/make-audio.ts",
+    "fonts": "node scripts/make-fonts.mjs",
+    "record": "node scripts/record-demo.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.2.0",

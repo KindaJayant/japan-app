@@ -13,7 +13,7 @@
   --sumi-soft: #5d544e;
   --sakura: #f4cfc8;       /* cherry blossom */
   --tokiha: #ee9a8b;       /* ibis-feather coral */
-  --shu: #d4573b;          /* vermilion, used sparingly */
+  --shu: #b8452c;          /* vermilion (deepened to pass WCAG AA with white and on washi) */
   --mizu: #b5d6d0;         /* water */
   --sora: #c3dbe6;         /* sky */
   --kon: #24324a;          /* indigo */
@@ -54,6 +54,7 @@
     --washi-deep: #262d40;
     --sumi: #f1e8da;
     --sumi-soft: #c2b8aa;
+    --shu: #f08a6c;
   }
 }
 :root[data-theme="dark"] {
@@ -61,6 +62,7 @@
   --washi-deep: #262d40;
   --sumi: #f1e8da;
   --sumi-soft: #c2b8aa;
+  --shu: #f08a6c;
 }
 
 html { background: var(--washi); }

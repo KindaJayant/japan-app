@@ -114,7 +114,7 @@ export default function Today() {
       <h2 className="display mt-4 text-3xl leading-tight font-semibold">{day.theme}</h2>
 
       {/* Live weather */}
-      <section className="on-pastel mt-4 flex items-center gap-4 rounded-xl bg-sora p-4 ink" aria-live="polite">
+      <section className="on-pastel mt-4 flex min-h-[128px] items-center gap-4 rounded-xl bg-sora p-4 ink" aria-live="polite">
         {weather ? (
           <>
             <div className="text-center">
@@ -143,14 +143,21 @@ export default function Today() {
         )}
       </section>
 
-      {weather && (
-        <p className="mt-1 text-right text-[10px] text-sumi-soft">
-          Weather data by{" "}
-          <a href="https://open-meteo.com/" target="_blank" rel="noreferrer" className="underline">
-            Open-Meteo.com
-          </a>
-        </p>
-      )}
+      <p className="mt-1 h-4 text-right text-[10px] text-sumi-soft">
+        {weather && (
+          <>
+            Weather data by{" "}
+            <a href="https://open-meteo.com/" target="_blank" rel="noreferrer" className="underline">
+              Open-Meteo.com
+            </a>
+          </>
+        )}
+      </p>
+
+      {/* Map */}
+      <div className="mt-5">
+        <JourneyMap stops={day.stops} routeKey={`today-${day.day}`} you={you} />
+      </div>
 
       {/* Rain plan */}
       {weather?.rainy && outdoor.length > 0 && (
@@ -161,16 +168,11 @@ export default function Today() {
             {outdoor.length > 1 ? "are" : "is"} outdoors.
             {indoorNearby.length > 0 && ` Nearby indoor picks: ${indoorNearby.map((x) => `${x.d.name} (${Math.round(x.km)} km)`).join(", ")}.`} Konbini sell umbrellas for about ¥600.
           </p>
-          <Link transitionTypes={["nav-forward"]} href={`/plan?q=${encodeURIComponent(rainQ)}`} className="press mt-3 inline-block rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
+          <Link transitionTypes={["nav-forward"]} href={`/plan?q=${encodeURIComponent(rainQ)}`} className="press mt-3 inline-block rounded-full bg-[#2b2522] px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
             Re-plan today for rain →
           </Link>
         </section>
       )}
-
-      {/* Map */}
-      <div className="mt-5">
-        <JourneyMap stops={day.stops} routeKey={`today-${day.day}`} you={you} />
-      </div>
 
       {/* Stops as a timetable */}
       <ol className="mt-5 border-t-[1.5px] border-sumi">
@@ -215,15 +217,15 @@ export default function Today() {
         {locError && <p className="mt-1 text-sm font-bold text-bad">{locError}</p>}
         <div className="mt-3 flex flex-wrap gap-2">
           {!nearest ? (
-            <button type="button" onClick={locate} className="press rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
+            <button type="button" onClick={locate} className="press rounded-full bg-[#2b2522] px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
               Where am I?
             </button>
           ) : (
-            <Link transitionTypes={["nav-forward"]} href={`/plan?q=${encodeURIComponent(offPlanQ)}`} className="press rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
+            <Link transitionTypes={["nav-forward"]} href={`/plan?q=${encodeURIComponent(offPlanQ)}`} className="press rounded-full bg-[#2b2522] px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
               Re-plan from here →
             </Link>
           )}
-          <Link transitionTypes={["nav-forward"]} href="/scan" className="press rounded-full ink bg-washi px-4 py-2 text-sm font-bold text-[#2b2522]">
+          <Link transitionTypes={["nav-forward"]} href="/scan" className="press rounded-full ink bg-[#fbf3e6] px-4 py-2 text-sm font-bold text-[#2b2522]">
             Check a label
           </Link>
         </div>

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Shippori_Mincho_B1, Zen_Maru_Gothic } from "next/font/google";
+import { Fraunces } from "next/font/google";
+import localFont from "next/font/local";
 import { TabBar } from "@/components/TabBar";
 import { RegisterSW } from "@/components/RegisterSW";
 import "./globals.css";
@@ -7,19 +8,24 @@ import "./globals.css";
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["SOFT", "WONK", "opsz"],
+  axes: ["SOFT", "WONK"],
 });
 
-const zenMaru = Zen_Maru_Gothic({
+// Japanese fonts are self-hosted and subset to the glyphs we use (scripts/make-fonts.mjs):
+// 3 files / 330 KB instead of 148 unicode-range slices / 2.6 MB.
+const zenMaru = localFont({
   variable: "--font-zen-maru",
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
+  src: [
+    { path: "./fonts/zen-maru-400.woff2", weight: "400" },
+    { path: "./fonts/zen-maru-700.woff2", weight: "700" },
+  ],
+  fallback: ["Hiragino Maru Gothic ProN", "Yu Gothic", "Noto Sans JP", "system-ui", "sans-serif"],
 });
 
-const shippori = Shippori_Mincho_B1({
+const shippori = localFont({
   variable: "--font-shippori",
-  weight: ["500", "800"],
-  subsets: ["latin"],
+  src: [{ path: "./fonts/shippori-800.woff2", weight: "800" }],
+  fallback: ["Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "serif"],
   preload: false,
 });
 

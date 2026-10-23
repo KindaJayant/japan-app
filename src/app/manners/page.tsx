@@ -27,7 +27,7 @@ export default function Manners() {
         <a href="#phrases" className="press rounded-full ink px-3 py-1.5 text-sm font-bold">
           Phrases
         </a>
-        <a href="#help" className="press rounded-full ink bg-shu px-3 py-1.5 text-sm font-bold text-white">
+        <a href="#help" className="press rounded-full ink bg-[#b8452c] px-3 py-1.5 text-sm font-bold text-white">
           Emergency
         </a>
       </nav>
@@ -53,7 +53,7 @@ export default function Manners() {
                   </span>
                   <span
                     lang="ja"
-                    className="grid h-14 w-14 rotate-[-6deg] place-items-center rounded-md border-[3px] border-[#d4573b] bg-[#fbf3e6] font-mincho text-3xl font-extrabold text-[#d4573b]"
+                    className="grid h-14 w-14 rotate-[-6deg] place-items-center rounded-md border-[3px] border-[#b8452c] bg-[#fbf3e6] font-mincho text-3xl font-extrabold text-[#b8452c]"
                     aria-hidden
                   >
                     {s.seal}

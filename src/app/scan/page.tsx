@@ -27,7 +27,7 @@ async function toJpegBase64(file: File, max = 1568): Promise<string> {
 type State =
   | { kind: "idle" }
   | { kind: "loading"; preview?: string }
-  | { kind: "done"; data: ScanResult & { ms?: number }; preview?: string; source: "photo" | "text" }
+  | { kind: "done"; data: ScanResult & { ms?: number; model?: string; cached?: boolean }; preview?: string; source: "photo" | "text" }
   | { kind: "error"; message: string; preview?: string };
 
 export default function ScanPage() {
@@ -78,6 +78,7 @@ export default function ScanPage() {
           type="file"
           accept="image/*"
           capture="environment"
+          aria-label="Photograph a food label"
           className="sr-only"
           onChange={(e) => e.target.files?.[0] && scanPhoto(e.target.files[0])}
         />
@@ -100,6 +101,7 @@ export default function ScanPage() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={3}
+            aria-label="Ingredients text"
             placeholder="小麦粉、砂糖、ゼラチン…"
             className="mt-3 w-full rounded-md ink bg-washi p-3 font-mincho"
           />
@@ -160,7 +162,7 @@ function Result({
   preview,
   source,
 }: {
-  data: ScanResult & { ms?: number };
+  data: ScanResult & { ms?: number; model?: string; cached?: boolean };
   diets: string[];
   preview?: string;
   source: "photo" | "text";
@@ -206,7 +208,11 @@ function Result({
 
       <p className="mt-6 border-t-[1.5px] border-dashed border-sumi-soft pt-3 text-xs leading-relaxed text-sumi-soft">
         <strong className="text-sumi">AI reads, rules decide.</strong>{" "}
-        {source === "photo" ? `Claude transcribed the label${data.ms ? ` in ${(data.ms / 1000).toFixed(1)}s` : ""}; ` : ""}
+        {source === "photo"
+          ? data.cached
+            ? "This photo was read before, so the transcription came from cache; "
+            : `${data.model ?? "The AI"} transcribed the label${data.ms ? ` in ${(data.ms / 1000).toFixed(1)}s` : ""}; `
+          : ""}
         the verdict comes from a hand-checked ingredient dictionary. The AI can only make a verdict stricter, never
         mark something safe. Always confirm with staff if you have an allergy.
       </p>
@@ -277,7 +283,7 @@ function CameraGlyph() {
     <svg viewBox="0 0 48 48" className="h-12 w-12 shrink-0" aria-hidden>
       <rect x="4" y="12" width="40" height="28" rx="4" fill="#fbf3e6" stroke="#2b2522" strokeWidth="2.5" />
       <rect x="16" y="7" width="16" height="7" rx="2" fill="#2b2522" />
-      <circle cx="24" cy="26" r="9" fill="#d4573b" stroke="#2b2522" strokeWidth="2.5" />
+      <circle cx="24" cy="26" r="9" fill="#b8452c" stroke="#2b2522" strokeWidth="2.5" />
       <circle cx="24" cy="26" r="3.5" fill="#fbf3e6" />
     </svg>
   );
