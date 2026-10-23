@@ -11,7 +11,7 @@
     "eval:scan": "tsx --env-file-if-exists=.env.local scripts/eval-scan.ts",
     "models": "tsx scripts/make-models.ts",
     "icons": "node scripts/make-icons.mjs",
-    "check": "tsc --noEmit && npm run eval:rules && npm run eval:plan",
+    "check": "next typegen && tsc --noEmit && npm run eval:rules && npm run eval:plan",
     "eval:plan": "tsx scripts/eval-plan.ts",
     "audio": "tsx --env-file-if-exists=.env.local scripts/make-audio.ts",
     "fonts": "node scripts/make-fonts.mjs",
