@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Japan Saathi 🇮🇳 → 🇯🇵
 
-## Getting Started
+A Japan travel companion for Indian travellers, built by Team Zero for the Hakuhodo hackathon. It removes the non-price barriers that keep Indian families from choosing Japan:
 
-First, run the development server:
+| Barrier (from our research) | What Saathi does |
+|---|---|
+| Dietary friction (30%+ are veg / Jain / halal) | **Label scan.** Photograph any Japanese label to get a Veg / Jain / Halal verdict with the hidden ingredient highlighted (e.g. かつおエキス = bonito extract), plus a polite chef card for staff |
+| Perceived cost | **Trip Studio** prices the whole trip in ₹ and compares it with Switzerland, Europe, Singapore and Dubai for the same days |
+| Pre-trip distance | Vintage travel posters, India–Japan connections, 3D/AR landmarks on your table, real photos on an animated route map |
+| Cultural anxiety | Etiquette per place; the plan's own tips |
+| Language & last mile | Zero-touch Kanji taxi cards; **Today** mode with live weather, rain plans and "re-plan from where I am" |
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # add GEMINI_API_KEY (free tier works) or ANTHROPIC_API_KEY
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Without any key, everything except AI label reading and the AI planner still works: taxi cards, chef cards, 3D/AR, maps, live weather, and paste-mode label checks (which run entirely on the phone).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## The engineering idea: AI proposes, code verifies
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+We never let a language model have the last word on something a traveller will rely on.
 
-## Learn More
+**1. Label scan: "AI reads, rules decide."**
+```
+photo → LLM vision → structured JSON (transcription, ingredients, concerns)
+                              ↓
+          deterministic rules engine ← hand-checked dictionary
+                              ↓
+               verdict per diet: safe / unsure / avoid
+```
+- `src/lib/diet/engine.ts` matches longest-term-first with masking, so 牛乳 (milk) never triggers 牛 (beef) and 牛蒡 (burdock) isn't beef. Text is normalised (full-width → half-width, katakana → hiragana).
+- **The AI can only make a verdict stricter.** An unknown AI concern makes the result "unsure"; an unreadable label is always "unsure". The AI alone can never produce "safe".
+- `npm run eval:rules`: 64 regression checks on real label wording. `npm run eval:scan`: end-to-end on photos in `fixtures/labels/`. **FALSE SAFE must be 0.**
 
-To learn more about Next.js, take a look at the following resources:
+**2. Trip Studio: "AI plans, code checks."**
+- The agent researches with tools (places, diet-safe food, etiquette, budget, routes), then must submit the plan through `present_itinerary`.
+- `src/lib/itinerary.ts` verifies the plan with code:
+  - every stop is real;
+  - daily load fits the group (gentler with seniors or kids);
+  - stairs are flagged for elders;
+  - every lunch and dinner fits each diet;
+  - meals are in that day's city;
+  - the plan is within budget;
+  - there is no back-tracking.
+- Failures go back to the model to repair. The traveller sees the same **"Checked for you"** ledger the model saw.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## AI providers and free-tier resilience
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`src/lib/llm/` uses **Gemini** when `GEMINI_API_KEY` is set and **Claude** when `ANTHROPIC_API_KEY` is set, with the same tools and the same verifier. The free Gemini tier is rate-limited and often overloaded, so `withGemini()`:
 
-## Deploy on Vercel
+- tries models in a chain: `gemini-3.5-flash` → `gemini-3.8-flash` → `gemini-flash-lite-latest` (override with `GEMINI_MODELS`);
+- switches model immediately on 503 / overloaded;
+- on 429, waits the server's `retryDelay` if it's short, otherwise moves on;
+- self-throttles per model below `GEMINI_RPM` (default 10) and tells the UI why it's waiting;
+- tells the UI to discard partial text when a stream fails mid-way, so the retry never duplicates text;
+- caches identical label photos and identical trip briefs (memory + disk), so rehearsals cost zero quota and replay instantly.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Map of the code
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Piece | Where |
+|---|---|
+| Label scan API | `src/app/api/scan`, `src/lib/diet/*` |
+| Agent API (NDJSON stream) | `src/app/api/agent`, `src/lib/llm/*`, `src/lib/agent/*` |
+| Itinerary verifier | `src/lib/itinerary.ts` |
+| Budget & comparison | `src/lib/budget.ts`, `src/data/costs.ts` |
+| Route maths | `src/lib/route.ts`, `src/lib/geo.ts` |
+| Animated map (real prefecture geometry) | `src/components/JourneyMap.tsx`, `scripts/make-map.ts` |
+| Real photos (Wikimedia, proxied same-origin) | `src/app/api/photo/[id]` |
+| Live weather (Open-Meteo, no key) | `src/app/api/weather` |
+| WhatsApp trip poster (canvas) | `src/components/ShareTrip.tsx` |
+| 3D/AR landmarks | `public/models/*.glb` (generated by `scripts/make-models.ts`) + `<model-viewer>` |
+| Offline | `public/sw.js`: every taxi card, chef card, place page and model is precached |
+
+## Design
+
+The look is a 1930s Japan Tourist Bureau poster, printed in pastel inks on washi paper:
+
+- **Typography:** Fraunces, Zen Maru Gothic and Shippori Mincho.
+- **Palette:** based on traditional Japanese colours.
+- **Motifs:** passport stamps (verdicts), hanko seals (checks), rail tickets (taxi cards), luggage tags (diets), a boarding pass (trip brief), a shop receipt (budget).
+- **Art:** all illustration is hand-built SVG. The only photos are real ones from Wikimedia Commons, with credit.
+
+## Before demo day
+
+- [ ] Verify every restaurant in `src/data/food.ts`, every address in `src/data/destinations.ts`, and the comparison prices in `src/data/costs.ts`.
+- [ ] Update `FX.jpyToInr` in `src/data/costs.ts`.
+- [ ] Add 15–20 real label photos to `fixtures/labels/` and get `npm run eval:scan` to **FALSE SAFE: 0**.
+- [ ] Run the exact demo brief once beforehand so it's cached (instant on stage, zero quota).
+- [ ] Deploy (Vercel) with `GEMINI_API_KEY` set; test on 2 phones over mobile data.
+- [ ] Record a backup video.
+
+## Demo script (3 min)
+
+1. **Hook:** "Priya is Jain. Her parents are 68. Price isn't what stops them from visiting Japan."
+2. **Inspire:** Fushimi Inari poster → India connection → *View on your table* (AR torii).
+3. **Design:** Trip Studio boarding pass: 2 adults, 2 seniors, Jain, 6 days, ₹1.5L. Tool steps tick by, then **Checked for you**: Jain meals ✓, within budget ✓, and a warning that Fushimi Inari's stairs are hard for seniors.
+4. **Cost barrier:** "Same money, other places": Japan comes in under Switzerland and Europe.
+5. **Share:** WhatsApp poster for the family group.
+6. **On the ground:** Today shows live rain in Kyoto → rain plan → scan a real snack: **不可 Avoid: かつおエキス** → chef card → taxi card.
+7. **Close:** "AI proposes, code verifies. Certainty sells Japan, not discounts."

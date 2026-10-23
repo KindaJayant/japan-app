@@ -6,12 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "eval:rules": "tsx scripts/eval-rules.ts",
+    "eval:scan": "tsx --env-file-if-exists=.env.local scripts/eval-scan.ts",
+    "models": "tsx scripts/make-models.ts",
+    "icons": "node scripts/make-icons.mjs",
+    "check": "tsc --noEmit && npm run eval:rules"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "1.2.0",
+    "@google/genai": "2.31.0",
+    "@google/model-viewer": "4.4.0",
+    "motion": "14.6.0",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
@@ -21,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
+    "tsx": "4.23.15",
     "typescript": "^5"
   }
 }

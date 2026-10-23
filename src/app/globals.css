@@ -1,26 +1,165 @@
 @import "tailwindcss";
 
+/*
+ * Design language: a 1930s Japan Tourist Bureau poster, printed in pastel inks
+ * on washi paper. Flat colour, no decorative gradients, ink outlines, stamps,
+ * ticket stubs and luggage tags. Colours lean on traditional Japanese names
+ * (nippon-iro), softened.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --washi: #f6efe3;        /* paper */
+  --washi-deep: #ede3d1;   /* card paper */
+  --sumi: #2b2522;         /* ink */
+  --sumi-soft: #5d544e;
+  --sakura: #f4cfc8;       /* cherry blossom */
+  --tokiha: #ee9a8b;       /* ibis-feather coral */
+  --shu: #d4573b;          /* vermilion, used sparingly */
+  --mizu: #b5d6d0;         /* water */
+  --sora: #c3dbe6;         /* sky */
+  --kon: #24324a;          /* indigo */
+  --matcha: #cfdcae;
+  --yamabuki: #ecc46a;     /* golden kerria */
+  --fuji: #cfc2e2;         /* wisteria */
+  --ok: #4f7a52;
+  --warn: #a8731f;
+  --bad: #b8432f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-washi: var(--washi);
+  --color-washi-deep: var(--washi-deep);
+  --color-sumi: var(--sumi);
+  --color-sumi-soft: var(--sumi-soft);
+  --color-sakura: var(--sakura);
+  --color-tokiha: var(--tokiha);
+  --color-shu: var(--shu);
+  --color-mizu: var(--mizu);
+  --color-sora: var(--sora);
+  --color-kon: var(--kon);
+  --color-matcha: var(--matcha);
+  --color-yamabuki: var(--yamabuki);
+  --color-fuji: var(--fuji);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-zen-maru);
+  --font-mincho: var(--font-shippori);
 }
 
+/* Dusk edition: same inks, printed on indigo. Pastel fills keep dark ink on top. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --washi: #1d2333;
+    --washi-deep: #262d40;
+    --sumi: #f1e8da;
+    --sumi-soft: #c2b8aa;
   }
 }
+:root[data-theme="dark"] {
+  --washi: #1d2333;
+  --washi-deep: #262d40;
+  --sumi: #f1e8da;
+  --sumi-soft: #c2b8aa;
+}
 
+html { background: var(--washi); }
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--washi);
+  color: var(--sumi);
+  font-family: var(--font-zen-maru), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Text printed on a pastel fill always uses fixed dark ink, in both themes. */
+.on-pastel { color: #2b2522; }
+
+/* Paper grain: fixed, non-interactive SVG noise over everything. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .2  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+@media (prefers-color-scheme: dark) { body::after { mix-blend-mode: screen; opacity: 0.06; } }
+
+/* Ink outline used on all "printed" objects. */
+.ink { border: 1.5px solid var(--sumi); }
+.ink-shadow { box-shadow: 3px 3px 0 var(--sumi); }
+.press { transition: transform .12s ease, box-shadow .12s ease; }
+.press:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--sumi); }
+
+/* Ticket stub: perforated notch on both sides. */
+.ticket {
+  -webkit-mask: radial-gradient(circle 10px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle 10px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+          mask: radial-gradient(circle 10px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+                radial-gradient(circle 10px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+}
+.perforation { border-top: 2px dashed color-mix(in srgb, currentColor 40%, transparent); }
+
+/* Seigaiha (wave) pattern for bands. */
+.seigaiha {
+  --a: var(--mizu);
+  --b: #f6efe3;
+  background-color: var(--a);
+  background-image:
+    radial-gradient(circle at 100% 150%, var(--a) 24%, var(--b) 25%, var(--b) 28%, var(--a) 29%, var(--a) 36%, var(--b) 37%, var(--b) 40%, transparent 41%),
+    radial-gradient(circle at 0 150%, var(--a) 24%, var(--b) 25%, var(--b) 28%, var(--a) 29%, var(--a) 36%, var(--b) 37%, var(--b) 40%, transparent 41%),
+    radial-gradient(circle at 50% 100%, var(--b) 10%, var(--a) 11%, var(--a) 23%, var(--b) 24%, var(--b) 30%, var(--a) 31%, var(--a) 43%, var(--b) 44%, var(--b) 50%, var(--a) 51%, var(--a) 63%, var(--b) 64%, var(--b) 71%, transparent 71%);
+  background-size: 40px 20px;
+}
+
+.vertical-jp { writing-mode: vertical-rl; letter-spacing: .14em; }
+
+.eyebrow {
+  font-family: var(--font-fraunces);
+  font-variant-caps: all-small-caps;
+  letter-spacing: .16em;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.display { font-family: var(--font-fraunces); font-variation-settings: "SOFT" 100, "WONK" 1; letter-spacing: -0.01em; }
+
+/* Markdown output from Saathi */
+.prose-saathi h2 { font-family: var(--font-fraunces); font-variation-settings: "SOFT" 100; font-size: 1.35rem; font-weight: 600; margin: 1.5rem 0 .4rem; line-height: 1.2; }
+.prose-saathi h3 { font-weight: 700; margin: 1rem 0 .3rem; }
+.prose-saathi p { margin: .5rem 0; line-height: 1.7; }
+.prose-saathi ul { margin: .4rem 0 .8rem; padding-left: 1.1rem; list-style: none; }
+.prose-saathi li { position: relative; margin: .35rem 0; line-height: 1.6; }
+.prose-saathi li::before { content: ""; position: absolute; left: -1rem; top: .62em; width: .45rem; height: .45rem; border-radius: 99px; background: var(--tokiha); }
+.prose-saathi a { text-decoration: underline; text-decoration-color: var(--tokiha); text-decoration-thickness: 2px; text-underline-offset: 3px; font-weight: 700; }
+.prose-saathi strong { font-weight: 700; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise .6s cubic-bezier(.2, .9, .25, 1.1) both; }
+
+@keyframes stamp {
+  0% { opacity: 0; transform: scale(1.8) rotate(var(--rot, -8deg)); }
+  60% { opacity: 1; transform: scale(.94) rotate(var(--rot, -8deg)); }
+  100% { opacity: 1; transform: scale(1) rotate(var(--rot, -8deg)); }
+}
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.draw-leg { stroke-dasharray: 1; animation: draw .6s cubic-bezier(.6, 0, .3, 1) both; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.fade-in { animation: fade .4s ease both; }
+@keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.pop-in { animation: pop .4s cubic-bezier(.3, 1.5, .5, 1) both; transform-box: view-box; }
+
+@keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
+.stamp-in { animation: stamp .45s cubic-bezier(.3, 1.4, .5, 1) both; }
+
+:focus-visible { outline: 2.5px solid var(--shu); outline-offset: 3px; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
