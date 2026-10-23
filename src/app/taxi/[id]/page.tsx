@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { DESTINATIONS, destinationById } from "@/data/destinations";
 import { BackLink } from "@/components/BackLink";
+import { Speak } from "@/components/Speak";
 
 // Every page is prerendered from generateStaticParams, so blocking on params is fine.
 export const instant = false;
@@ -39,6 +40,7 @@ export default async function TaxiCard({ params }: PageProps<"/taxi/[id]">) {
         <aside className="mt-8 rounded-xl bg-[#f6efe3] p-4 landscape:mt-0 landscape:w-72">
           <p className="eyebrow">Say it</p>
           <p className="mt-1 text-lg font-bold">{d.taxi.romaji}</p>
+          <Speak text={d.taxi.ja} label="Play for the driver" className="mt-2" />
           <p className="mt-1 text-sm opacity-75">{d.taxi.say}</p>
           <p className="mt-3 text-xs opacity-70">Don&rsquo;t touch the door: the driver opens it. Turn your phone sideways for a bigger card.</p>
         </aside>

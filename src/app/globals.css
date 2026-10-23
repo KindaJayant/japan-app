@@ -158,6 +158,25 @@ body::after {
 
 .stamp-in { animation: stamp .45s cubic-bezier(.3, 1.4, .5, 1) both; }
 
+/* ── Navigation transitions (React <ViewTransition> + View Transitions API) ── */
+::view-transition { pointer-events: none; } /* taps during an animation still land */
+::view-transition-old(.nav-forward) { --slide: -48px; animation: 140ms ease-in both vt-fade reverse, 360ms cubic-bezier(.4, 0, .2, 1) both vt-slide reverse; }
+::view-transition-new(.nav-forward) { --slide: 48px; animation: 200ms ease-out 110ms both vt-fade, 360ms cubic-bezier(.4, 0, .2, 1) both vt-slide; }
+::view-transition-old(.nav-back) { --slide: 48px; animation: 140ms ease-in both vt-fade reverse, 360ms cubic-bezier(.4, 0, .2, 1) both vt-slide reverse; }
+::view-transition-new(.nav-back) { --slide: -48px; animation: 200ms ease-out 110ms both vt-fade, 360ms cubic-bezier(.4, 0, .2, 1) both vt-slide; }
+::view-transition-group(.morph) { animation-duration: 420ms; animation-timing-function: cubic-bezier(.3, .8, .25, 1); }
+::view-transition-image-pair(.morph) { animation-name: vt-blur; }
+@keyframes vt-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vt-slide { from { translate: var(--slide) 0; } to { translate: 0 0; } }
+@keyframes vt-blur { 35% { filter: blur(2px); } }
+/* The tab bar is the spatial anchor: it never moves. */
+::view-transition-group(tabbar) { animation: none; z-index: 100; }
+::view-transition-old(tabbar) { display: none; }
+::view-transition-new(tabbar) { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
+}
+
 :focus-visible { outline: 2.5px solid var(--shu); outline-offset: 3px; border-radius: 4px; }
 
 @media (prefers-reduced-motion: reduce) {

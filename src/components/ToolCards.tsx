@@ -100,7 +100,7 @@ export function FoodCard({ data }: { data: Food }) {
 
 export function PlaceTicket({ data }: { data: { id: string; name: string; nameJa: string; city: string } }) {
   return (
-    <Link href={`/taxi/${data.id}`} className="press ticket on-pastel flex items-center bg-yamabuki">
+    <Link transitionTypes={["nav-forward"]} href={`/taxi/${data.id}`} className="press ticket on-pastel flex items-center bg-yamabuki">
       <span className="flex-1 px-4 py-3">
         <span lang="ja" className="block font-mincho text-lg font-extrabold">
           {data.nameJa}

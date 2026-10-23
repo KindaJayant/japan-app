@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { CHEF_CARD } from "@/lib/diet/chefCard";
 import { DIETS, DIET_LABEL, type Diet } from "@/lib/diet/types";
 import { BackLink } from "@/components/BackLink";
+import { Speak } from "@/components/Speak";
 
 // Every page is prerendered from generateStaticParams, so blocking on params is fine.
 export const instant = false;
@@ -26,6 +27,7 @@ export default async function ChefCard({ params }: PageProps<"/chef/[diet]">) {
         <p lang="ja" className="mt-6 font-mincho text-[1.6rem] leading-[1.9] font-extrabold sm:text-4xl sm:leading-[1.8]">
           {card.ja}
         </p>
+        <Speak text={card.ja} label="Read it aloud" className="mt-5" />
         <hr className="my-6 border-dashed border-[#2b252266]" />
         <p className="text-base leading-relaxed">{card.en}</p>
       </article>

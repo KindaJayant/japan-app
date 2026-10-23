@@ -223,7 +223,7 @@ export function ShareTrip({ v }: { v: VerifiedItinerary }) {
           </button>
         )}
         {saved ? (
-          <Link href="/today" className="press rounded-full bg-shu px-5 py-2.5 font-bold text-white ink">
+          <Link transitionTypes={["nav-forward"]} href="/today" className="press rounded-full bg-shu px-5 py-2.5 font-bold text-white ink">
             Open in Today →
           </Link>
         ) : (

@@ -5,12 +5,13 @@ import { readLabel } from "@/lib/diet/scan";
 import { ApiError } from "@google/genai";
 import { AllModelsBusyError } from "@/lib/llm/gemini";
 import { PROVIDER } from "@/lib/llm/provider";
+import { clientId, rateLimit } from "@/lib/rateLimit";
 
 export const maxDuration = 60;
 
 const Body = z.union([
   z.object({
-    image: z.string().min(100),
+    image: z.string().min(100).max(8_000_000), // ~6 MB photo; the client downsizes to ~1568px first
     mediaType: z.enum(["image/jpeg", "image/png", "image/webp"]),
   }),
   z.object({ text: z.string().min(1).max(5000) }),
@@ -21,6 +22,9 @@ export async function POST(req: Request) {
   if (!parsed.success) return Response.json({ error: "Send {image, mediaType} or {text}" }, { status: 400 });
 
   if ("text" in parsed.data) return Response.json(analyzeText(parsed.data.text));
+
+  const limited = rateLimit(`scan:${clientId(req)}`, 15, 60_000);
+  if (!limited.ok) return Response.json({ error: `Too many scans. Try again in ${limited.retryAfter}s, or paste the ingredients.` }, { status: 429 });
 
   const started = Date.now();
   try {

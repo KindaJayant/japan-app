@@ -102,14 +102,14 @@ export function TripBoard({ v }: { v: VerifiedItinerary }) {
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={`/api/photo/${id}?raw=1`} alt="" loading="lazy" className="h-14 w-14 shrink-0 rounded-md bg-washi-deep object-cover ink" />
                           <span className="min-w-0 flex-1">
-                            <Link href={`/place/${id}`} className="block truncate font-bold">
+                            <Link transitionTypes={["nav-forward"]} href={`/place/${id}`} className="block truncate font-bold">
                               {p.name}
                             </Link>
                             <span className="text-xs text-sumi-soft">
                               {p.setting === "indoor" ? "Indoor" : "Outdoor"} · ~{p.hours} h{p.walking === "hard" ? " · lots of stairs" : ""}
                             </span>
                           </span>
-                          <Link href={`/taxi/${id}`} className="press shrink-0 rounded-full ink bg-yamabuki px-2.5 py-1 font-mincho text-sm font-extrabold on-pastel" aria-label={`Taxi card for ${p.name}`}>
+                          <Link transitionTypes={["nav-forward"]} href={`/taxi/${id}`} className="press shrink-0 rounded-full ink bg-yamabuki px-2.5 py-1 font-mincho text-sm font-extrabold on-pastel" aria-label={`Taxi card for ${p.name}`}>
                             車
                           </Link>
                         </li>

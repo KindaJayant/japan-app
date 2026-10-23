@@ -5,13 +5,14 @@
  *    the map and the 3D models.
  *  - Pages & assets: stale-while-revalidate. API calls: network only (except photos).
  */
-const VERSION = "saathi-v1";
+const VERSION = "saathi-v2";
 const PLACES = ["fushimi-inari", "kinkakuji", "kiyomizu", "arashiyama", "sensoji", "nakamuraya", "shibuya", "todaiji", "dotonbori", "hiroshima", "kawaguchiko"];
 const PRECACHE = [
   "/",
   "/scan",
   "/today",
   "/plan",
+  "/manners",
   ...["veg", "jain", "halal"].map((d) => `/chef/${d}`),
   ...PLACES.map((p) => `/taxi/${p}`),
   ...PLACES.map((p) => `/place/${p}`),

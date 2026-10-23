@@ -88,6 +88,11 @@ function TripStudio() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history.filter((t) => t.text.trim()).map((t) => ({ role: t.role, content: t.text })) }),
       });
+      if (!res.ok && res.headers.get("content-type")?.includes("json")) {
+        const j = await res.json().catch(() => ({}));
+        update((a) => void (a.error = j.error ?? "Saathi is unavailable right now."));
+        return;
+      }
       if (!res.body) throw new Error("No response");
       const reader = res.body.getReader();
       const decoder = new TextDecoder();

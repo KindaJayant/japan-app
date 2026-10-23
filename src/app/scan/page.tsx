@@ -264,7 +264,7 @@ function ChefLinks({ diets }: { diets: string[] }) {
   return (
     <div className="mt-6 flex flex-wrap gap-2">
       {diets.map((d) => (
-        <Link key={d} href={`/chef/${d}`} className="press ink ink-shadow rounded-full bg-yamabuki px-4 py-2 text-sm font-bold on-pastel">
+        <Link transitionTypes={["nav-forward"]} key={d} href={`/chef/${d}`} className="press ink ink-shadow rounded-full bg-yamabuki px-4 py-2 text-sm font-bold on-pastel">
           Show {DIET_LABEL[d as keyof typeof DIET_LABEL]} chef card →
         </Link>
       ))}

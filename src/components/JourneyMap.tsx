@@ -251,10 +251,10 @@ function PhotoCard({ d, vb, stops, legs, onClose }: { d: Destination; vb: VB; st
         </p>
       )}
       <div className="mt-2 flex gap-2 px-1 text-xs font-bold">
-        <Link href={`/place/${d.id}`} className="underline decoration-tokiha decoration-2 underline-offset-2">
+        <Link transitionTypes={["nav-forward"]} href={`/place/${d.id}`} className="underline decoration-tokiha decoration-2 underline-offset-2">
           Details
         </Link>
-        <Link href={`/taxi/${d.id}`} className="underline decoration-tokiha decoration-2 underline-offset-2">
+        <Link transitionTypes={["nav-forward"]} href={`/taxi/${d.id}`} className="underline decoration-tokiha decoration-2 underline-offset-2">
           Taxi card
         </Link>
         {photo?.page && (

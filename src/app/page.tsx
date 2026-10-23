@@ -2,6 +2,8 @@ import Link from "next/link";
 import { DESTINATIONS } from "@/data/destinations";
 import { Poster } from "@/components/Poster";
 import { Reveal } from "@/components/Reveal";
+import { PosterMorph } from "@/components/PageTransition";
+import { JourneyMap } from "@/components/JourneyMap";
 
 const COUNTERS = [
   {
@@ -61,18 +63,20 @@ export default function Home() {
             </p>
           </Reveal>
           <Reveal delay={0.14} className="mt-6 flex flex-wrap gap-3">
-            <Link href="/scan" className="press ink ink-shadow rounded-full bg-sumi px-5 py-3 font-bold text-washi">
+            <Link transitionTypes={["nav-forward"]} href="/scan" className="press ink ink-shadow rounded-full bg-sumi px-5 py-3 font-bold text-washi">
               Scan a label
             </Link>
-            <Link href="/plan" className="press ink ink-shadow rounded-full bg-washi px-5 py-3 font-bold">
+            <Link transitionTypes={["nav-forward"]} href="/plan" className="press ink ink-shadow rounded-full bg-washi px-5 py-3 font-bold">
               Design my trip
             </Link>
           </Reveal>
         </div>
 
         <Reveal delay={0.1} className="relative mx-auto w-[78%] max-w-xs md:w-full">
-          <Link href={`/place/${hero.id}`} className="block rotate-[1.5deg] transition-transform hover:rotate-0">
-            <Poster art={hero.art} tone={hero.tone} className="w-full ink-shadow" />
+          <Link transitionTypes={["nav-forward"]} href={`/place/${hero.id}`} className="block rotate-[1.5deg] transition-transform hover:rotate-0">
+            <PosterMorph id={hero.id}>
+              <Poster art={hero.art} tone={hero.tone} className="w-full ink-shadow" />
+            </PosterMorph>
             <span className="on-pastel absolute bottom-5 left-5 right-5 flex items-end justify-between">
               <span className="display text-2xl leading-none font-semibold">Kyoto</span>
               <span className="eyebrow">See it in AR →</span>
@@ -96,7 +100,7 @@ export default function Home() {
           {COUNTERS.map((c, i) => (
             <li key={c.no}>
               <Reveal delay={i * 0.06}>
-                <Link href={c.href} className={`press ticket on-pastel flex h-full ${c.fill}`}>
+                <Link href={c.href} transitionTypes={["nav-forward"]} className={`press ticket on-pastel flex h-full ${c.fill}`}>
                   <span className="flex w-16 shrink-0 flex-col items-center justify-center border-r-2 border-dashed border-[#2b252266] py-4">
                     <span className="font-mincho text-3xl font-extrabold">{c.ja}</span>
                     <span className="mt-1 text-xs font-bold tracking-widest">{c.no}</span>
@@ -123,9 +127,15 @@ export default function Home() {
         <ul className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none]">
           {DESTINATIONS.map((d) => (
             <li key={d.id} className="w-[62%] max-w-[240px] shrink-0 snap-start">
-              <Link href={`/place/${d.id}`} className="group block">
+              <Link transitionTypes={["nav-forward"]} href={`/place/${d.id}`} className="group block">
                 <div className="relative">
-                  <Poster art={d.art} tone={d.tone} className="w-full transition-transform group-hover:-translate-y-1" />
+                  {d.id === hero.id ? (
+                    <Poster art={d.art} tone={d.tone} className="w-full transition-transform group-hover:-translate-y-1" />
+                  ) : (
+                    <PosterMorph id={d.id}>
+                      <Poster art={d.art} tone={d.tone} className="w-full transition-transform group-hover:-translate-y-1" />
+                    </PosterMorph>
+                  )}
                   <span className="vertical-jp on-pastel absolute right-3 top-3 max-h-[85%] overflow-hidden bg-[#fbf3e6] px-1 py-2 font-mincho text-base font-extrabold ink">
                     {d.nameJa}
                   </span>
@@ -138,6 +148,17 @@ export default function Home() {
         </ul>
       </section>
 
+      {/* Explore map */}
+      <section className="mt-10" aria-labelledby="map">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 id="map" className="display text-3xl font-semibold">
+            The map
+          </h2>
+          <span className="eyebrow text-sumi-soft">Tap a pin for a real photo</span>
+        </div>
+        <JourneyMap stops={[]} routeKey="explore" />
+      </section>
+
       {/* India–Japan connection */}
       <section className="mt-10">
         <Reveal>
@@ -148,7 +169,7 @@ export default function Home() {
             </blockquote>
             <figcaption className="mt-3 text-sm opacity-80">
               The connection is older than you think.{" "}
-              <Link href="/place/todaiji" className="font-bold underline decoration-2 underline-offset-2">
+              <Link href="/place/todaiji" transitionTypes={["nav-forward"]} className="font-bold underline decoration-2 underline-offset-2">
                 Visit Tōdai-ji →
               </Link>
             </figcaption>

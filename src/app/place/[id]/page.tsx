@@ -6,6 +6,7 @@ import { Poster } from "@/components/Poster";
 import { ModelViewer } from "@/components/ModelViewer";
 import { BackLink } from "@/components/BackLink";
 import { Reveal } from "@/components/Reveal";
+import { PosterMorph } from "@/components/PageTransition";
 
 // Every page is prerendered from generateStaticParams, so blocking on params is fine.
 export const instant = false;
@@ -28,7 +29,9 @@ export default async function Place({ params }: PageProps<"/place/[id]">) {
     <div className="mx-auto max-w-3xl">
       {/* Poster banner */}
       <div className="relative h-[52vh] max-h-[460px] overflow-hidden border-b-[1.5px] border-sumi">
-        <Poster art={d.art} tone={d.tone} className="h-full w-full" />
+        <PosterMorph id={d.id}>
+          <Poster art={d.art} tone={d.tone} className="h-full w-full" />
+        </PosterMorph>
         <div className="absolute inset-x-4 top-[max(env(safe-area-inset-top),14px)] flex items-center justify-between">
           <BackLink />
           <span className="eyebrow on-pastel rounded-full bg-[#fbf3e6] px-3 py-1 ink">{d.city}</span>
@@ -44,7 +47,7 @@ export default async function Place({ params }: PageProps<"/place/[id]">) {
 
         {/* Taxi ticket */}
         <Reveal delay={0.06}>
-          <Link href={`/taxi/${d.id}`} className="press ticket on-pastel mt-6 flex items-stretch bg-yamabuki">
+          <Link transitionTypes={["nav-forward"]} href={`/taxi/${d.id}`} className="press ticket on-pastel mt-6 flex items-stretch bg-yamabuki">
             <span className="flex flex-1 flex-col justify-center px-5 py-4">
               <span className="eyebrow">Taxi card</span>
               <span lang="ja" className="font-mincho text-2xl font-extrabold">
@@ -102,7 +105,7 @@ export default async function Place({ params }: PageProps<"/place/[id]">) {
           </section>
         )}
 
-        <Link
+        <Link transitionTypes={["nav-forward"]}
           href={`/plan?q=${encodeURIComponent(`Plan a trip that includes ${d.name}`)}`}
           className="press ink ink-shadow mt-8 mb-4 block rounded-full bg-sumi px-5 py-3 text-center font-bold text-washi"
         >

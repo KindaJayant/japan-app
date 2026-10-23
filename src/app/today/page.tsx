@@ -89,7 +89,7 @@ export default function Today() {
       {!trip && (
         <p className="mt-3 rounded-md bg-washi-deep px-3 py-2 text-sm">
           Showing a demo trip.{" "}
-          <Link href="/plan" className="font-bold underline decoration-tokiha decoration-2 underline-offset-2">
+          <Link transitionTypes={["nav-forward"]} href="/plan" className="font-bold underline decoration-tokiha decoration-2 underline-offset-2">
             Design yours in the Trip Studio →
           </Link>
         </p>
@@ -143,6 +143,15 @@ export default function Today() {
         )}
       </section>
 
+      {weather && (
+        <p className="mt-1 text-right text-[10px] text-sumi-soft">
+          Weather data by{" "}
+          <a href="https://open-meteo.com/" target="_blank" rel="noreferrer" className="underline">
+            Open-Meteo.com
+          </a>
+        </p>
+      )}
+
       {/* Rain plan */}
       {weather?.rainy && outdoor.length > 0 && (
         <section className="on-pastel mt-3 rounded-xl bg-yamabuki p-4 ink ink-shadow">
@@ -152,7 +161,7 @@ export default function Today() {
             {outdoor.length > 1 ? "are" : "is"} outdoors.
             {indoorNearby.length > 0 && ` Nearby indoor picks: ${indoorNearby.map((x) => `${x.d.name} (${Math.round(x.km)} km)`).join(", ")}.`} Konbini sell umbrellas for about ¥600.
           </p>
-          <Link href={`/plan?q=${encodeURIComponent(rainQ)}`} className="press mt-3 inline-block rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
+          <Link transitionTypes={["nav-forward"]} href={`/plan?q=${encodeURIComponent(rainQ)}`} className="press mt-3 inline-block rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
             Re-plan today for rain →
           </Link>
         </section>
@@ -178,13 +187,13 @@ export default function Today() {
               <div className="flex items-center gap-3 py-1">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={`/api/photo/${s.id}?raw=1`} alt="" className="h-12 w-12 shrink-0 rounded-md bg-washi-deep object-cover ink" />
-                <Link href={`/place/${s.id}`} className="min-w-0 flex-1">
+                <Link transitionTypes={["nav-forward"]} href={`/place/${s.id}`} className="min-w-0 flex-1">
                   <span className="block truncate font-bold">{s.name}</span>
                   <span className="text-xs text-sumi-soft">
                     {s.setting === "outdoor" ? "Outdoor" : "Indoor"} · ~{s.hours} h
                   </span>
                 </Link>
-                <Link href={`/taxi/${s.id}`} className="press shrink-0 rounded-full ink bg-yamabuki px-3 py-1.5 text-sm font-bold on-pastel">
+                <Link transitionTypes={["nav-forward"]} href={`/taxi/${s.id}`} className="press shrink-0 rounded-full ink bg-yamabuki px-3 py-1.5 text-sm font-bold on-pastel">
                   Taxi card
                 </Link>
               </div>
@@ -210,11 +219,11 @@ export default function Today() {
               Where am I?
             </button>
           ) : (
-            <Link href={`/plan?q=${encodeURIComponent(offPlanQ)}`} className="press rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
+            <Link transitionTypes={["nav-forward"]} href={`/plan?q=${encodeURIComponent(offPlanQ)}`} className="press rounded-full bg-sumi px-4 py-2 text-sm font-bold text-[#f6efe3] ink">
               Re-plan from here →
             </Link>
           )}
-          <Link href="/scan" className="press rounded-full ink bg-washi px-4 py-2 text-sm font-bold text-[#2b2522]">
+          <Link transitionTypes={["nav-forward"]} href="/scan" className="press rounded-full ink bg-washi px-4 py-2 text-sm font-bold text-[#2b2522]">
             Check a label
           </Link>
         </div>

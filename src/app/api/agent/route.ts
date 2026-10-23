@@ -7,6 +7,7 @@ import { runGeminiAgent } from "@/lib/llm/geminiAgent";
 import { runAnthropicAgent } from "@/lib/llm/anthropicAgent";
 import { PROVIDER } from "@/lib/llm/provider";
 import type { AgentEvent } from "@/lib/llm/types";
+import { clientId, rateLimit } from "@/lib/rateLimit";
 
 export const maxDuration = 300;
 
@@ -32,6 +33,12 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "Bad request" }, { status: 400 });
   const { messages, fresh } = parsed.data;
+
+  const id = clientId(req);
+  const limited = [rateLimit(`agent:m:${id}`, 6, 60_000), rateLimit(`agent:d:${id}`, 60, 86_400_000)].find((r) => !r.ok);
+  if (limited && !limited.ok) {
+    return Response.json({ error: `Too many plans at once. Try again in ${limited.retryAfter}s.` }, { status: 429, headers: { "Retry-After": String(limited.retryAfter) } });
+  }
   const key = cacheKey("agent-v1", PROVIDER, messages);
   const encoder = new TextEncoder();
 
