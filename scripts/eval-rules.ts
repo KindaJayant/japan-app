@@ -115,6 +115,16 @@ const CASES: { name: string; text: string; expect: Expect }[] = [
     expect: { veg: "avoid", jain: "avoid", halal: "safe" },
   },
   {
+    name: "Garbled paste (mojibake) is never safe",
+    text: "????????、????",
+    expect: { veg: "unsure", jain: "unsure", halal: "unsure" },
+  },
+  {
+    name: "Replacement characters are never safe",
+    text: "����、��",
+    expect: { veg: "unsure", jain: "unsure", halal: "unsure" },
+  },
+  {
     name: "Empty / unreadable",
     text: "",
     expect: { veg: "unsure", jain: "unsure", halal: "unsure" },
