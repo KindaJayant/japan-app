@@ -17,7 +17,7 @@ STEP 1: Set up and run it
        GEMINI_API_KEY=<ask me for my key and paste it here>
    Never print the key back to me, never commit it, never put it in any other file.
    (`.env.local` is already in .gitignore.)
-4. Run `npm run check`. Expect "64/64 checks passed · FALSE SAFE: 0" and "8 plans · all checks behave".
+4. Run `npm run check`. Expect "70/70 checks passed · FALSE SAFE: 0" and "8 plans · all checks behave".
    If anything fails, show me the output and stop.
 5. Start the dev server with `npm run dev` and give me the URL (http://localhost:3000).
 6. Smoke test (open each URL, or use a browser tool if you have one):

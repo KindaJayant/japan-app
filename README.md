@@ -34,7 +34,7 @@ photo → LLM vision → structured JSON (transcription, ingredients, concerns)
 ```
 - `src/lib/diet/engine.ts` matches longest-term-first with masking, so 牛乳 (milk) never triggers 牛 (beef) and 牛蒡 (burdock) isn't beef. Text is normalised (full-width → half-width, katakana → hiragana).
 - **The AI can only make a verdict stricter.** An unknown AI concern makes the result "unsure"; an unreadable label is always "unsure". The AI alone can never produce "safe".
-- `npm run eval:rules`: 64 regression checks on real label wording. `npm run eval:scan`: end-to-end on photos in `fixtures/labels/`. **FALSE SAFE must be 0.**
+- `npm run eval:rules`: 70 regression checks on real label wording (garbled text is never "safe"). `npm run eval:scan`: end-to-end on photos in `fixtures/labels/`. **FALSE SAFE must be 0.**
 
 **2. Trip Studio: "AI plans, code checks."**
 - The agent researches with tools (places, diet-safe food, etiquette, budget, routes), then must submit the plan through `present_itinerary`.
@@ -89,7 +89,7 @@ photo → LLM vision → structured JSON (transcription, ingredients, concerns)
 |---|---|
 | `npm run dev` | Dev server on :3000 |
 | `npm run build && npm start` | Production build + server |
-| `npm run check` | Types + rules regression (64) + verifier regression (8) |
+| `npm run check` | Types + rules regression (70) + verifier regression (8) |
 | `npm run eval:scan` | End-to-end label photos in `fixtures/labels/` (uses the AI key) |
 | `npm run audio` | Generate Japanese MP3s for fixed lines (Gemini TTS) |
 | `npm run fonts` | Re-subset Japanese fonts to the glyphs in `src/` |

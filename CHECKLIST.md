@@ -18,7 +18,7 @@ The checklist combines three sources:
 
 | # | Deck promise | Status | Evidence in the app |
 |---|---|---|---|
-| A1 | **Dietary friction:** flag hidden dashi / animal fat for Veg, Jain, Halal (slide 2) | ✅ | Scan tab. The dictionary engine flags かつおエキス, ゼラチン, ラード, みりん, onion and garlic for Jain, and more. `npm run eval:rules`: 64/64, **0 false "safe"** |
+| A1 | **Dietary friction:** flag hidden dashi / animal fat for Veg, Jain, Halal (slide 2) | ✅ | Scan tab. The dictionary engine flags かつおエキス, ゼラチン, ラード, みりん, onion and garlic for Jain, and more. `npm run eval:rules`: 70/70, **0 false "safe"** (incl. garbled-input cases) |
 | A2 | **Cultural anxiety:** onsen, shoes, shrines, trash, tipping (slide 2) | ✅ | Manners tab: step-by-step guides for shrine, onsen, temple and train; etiquette on every place page; tips in each trip day |
 | A3 | **Pre-trip distance:** engaging discovery (slide 2) | ✅ | Vintage poster gallery, India–Japan connections, explore map with real photos, 3D/AR |
 | A4 | **Language & last mile:** taxi drivers, station staff (slide 2) | ✅ | Full-screen Kanji taxi cards with **natural Japanese audio** ("Play for the driver"); phrases with audio |
@@ -80,7 +80,7 @@ The checklist combines three sources:
 | C10 | Privacy | ✅ | Label photos aren't stored; location only on tap; trip stays on the device |
 | C11 | Attribution / licences | ✅ | Wikimedia photo credit, Open-Meteo credit, map data (MIT) noted in code |
 | C12 | Safety info | ✅ | Emergency numbers (offline, tap-to-call) |
-| C13 | Tests | ✅ | `npm run check`: types + 64 rules checks + 8 verifier scenarios; `eval:scan` on photos |
+| C13 | Tests | ✅ | `npm run check`: types + 70 rules checks + 8 verifier scenarios; `eval:scan` on photos |
 
 ## D. Team actions before demo day (cannot be done by code)
 
